@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="Article">  
+
+ <resultMap type="com.Blog.bean.Article" id="ArticleResultMap">
+        <id column="article_id" jdbcType="INTEGER" property="article_id"/>
+        <result column="user_id" jdbcType="INTEGER" property="user_id"/>
+        <result column="article_name" jdbcType="VARCHAR" property="article_name"/>
+        <result column="date" jdbcType="VARCHAR" property="date"/>
+        <result column="view_number" jdbcType="INTEGER" property="view_number"/>
+    	<result column="content" jdbcType="VARCHAR" property="content"/>
+    	<result column="digest" jdbcType="VARCHAR" property="digest"/>
+    	<result column="type" jdbcType="VARCHAR" property="type"/>
+    	<result column="statu" jdbcType="VARCHAR" property="statu"/>
+    	<result column="like_num" jdbcType="INTEGER" property="like_num"/>
+    	<result column="dislike_num" jdbcType="INTEGER" property="dislike_num"/>
+          <association property="user" javaType="com.Blog.bean.UserInfo">
+         	<id column="user_id" jdbcType="INTEGER" property="user_id"/>
+        	<result column="username" jdbcType="VARCHAR" property="username"/>
+        	<result column="truename" jdbcType="VARCHAR" property="truename"/>
+        	<result column="password" jdbcType="VARCHAR" property="password"/>
+        	<result column="country" jdbcType="VARCHAR" property="country"/>
+        	<result column="headshot" jdbcType="LONGVARBINARY" property="headshot"/>
+    		<result column="sex" jdbcType="VARCHAR" property="sex"/>
+    		<result column="introduction" jdbcType="VARCHAR" property="introduction"/>
+    		<result column="city" jdbcType="VARCHAR" property="city"/>
+    		<result column="job" jdbcType="VARCHAR" property="job"/>
+    		<result column="trade" jdbcType="VARCHAR" property="trade"/>
+    		<result column="score" jdbcType="INTEGER" property="score"/>
+    		<result column="email" jdbcType="VARCHAR" property="email"/>
+    		<result column="tel" jdbcType="VARCHAR" property="tel"/>
+         </association>
+  </resultMap> 
+  
+  
+  <select id="getArticleInfoByArticleId" resultType="com.Blog.bean.Article">
+     select * from article where article_id=#{article_id}
+  </select>
+  
+  <!-- <select id="getAllArticleInfo" resultMap="ArticleResultMap">
+     select * from article a,user_info u where a.user_id=u.user_id
+  </select> -->
+   <select id="getAllArticleOrderByViews" resultType="com.Blog.bean.Article">
+     select * from article where statu="已审核" order by view_number DESC limit 0,8 
+  </select>
+  
+  <select id="getAllArticleOrderByLikenum" resultType="com.Blog.bean.Article">
+     select * from article where statu="已审核" order by like_num DESC limit 0,8 
+  </select>
+  <select id="getAllArticleOrderByDate" resultType="com.Blog.bean.Article">
+     select * from article where statu="已审核" order by date DESC limit 0,8 
+  </select>
+	
+	<select id="getArticleInfoByUserId" resultType="com.Blog.bean.Article" parameterType="int">
+		select * from article where user_id=#{_parameter}
+	</select>	
+	<select  id="getAllArticleInfo" resultMap="ArticleResultMap" parameterType="String">
+		 select * from article a,user_info u where a.user_id=u.user_id AND a.statu="已审核"
+			<if test="_parameter!=null"> AND a.article_name LIKE '%' #{_parameter} '%' </if>
+	</select>
+	
+	<select  id="getAllArticleInfoBytype" resultMap="ArticleResultMap" parameterType="String">
+		 select * from article a,user_info u where a.user_id=u.user_id AND a.statu="已审核"
+			<if test="_parameter!=null"> AND a.type LIKE '%' #{_parameter} '%' </if>
+	
+	</select>
+	
+	<insert id="addArticle" parameterType="com.Blog.bean.Article" 
+        useGeneratedKeys="true" keyProperty="article_id"> 
+        insert into article(user_id,article_name,date,view_number,content,like_num,dislike_num,type,digest,statu)  
+             values(#{user_id},#{article_name},#{date},#{view_number},#{content},#{like_num},#{dislike_num},#{type},#{digest},#{statu})  
+    </insert>
+    
+    <insert id="addDeletedArticleToArticle" parameterType="com.Blog.bean.Article" 
+        > 
+        insert into article(article_id,user_id,article_name,date,view_number,content,like_num,dislike_num,type,digest,statu)  
+             values(#{article_id},#{user_id},#{article_name},#{date},#{view_number},#{content},#{like_num},#{dislike_num},#{type},#{digest},#{statu})  
+    </insert>
+	<update id="updateArticle" parameterType="com.Blog.bean.Article" >
+        update article set article_name=#{article_name},date=#{date},content=#{content},type=#{type},digest=#{digest},statu=#{statu}  where article_id=#{article_id}
+    </update>
+	
+	<delete id="deleteArticle" parameterType="int">
+        delete from article where article_id=#{_parameter}
+    </delete>
+    
+    
+</mapper>
+

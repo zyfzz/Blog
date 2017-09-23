@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="Article_delete">  
+  	<select id="getArticleInfoByArticleId" resultType="com.Blog.bean.Article">
+     select * from article_delete where article_id=#{article_id}
+  </select>
+  	
+  	<insert id="addArticleDelete" parameterType="com.Blog.bean.Article" 
+        > 
+        insert into article_delete(article_id,user_id,article_name,date,view_number,content,like_num,dislike_num,type,digest,statu)  
+             values(#{article_id},#{user_id},#{article_name},#{date},#{view_number},#{content},#{like_num},#{dislike_num},#{type},#{digest},#{statu})  
+    </insert>
+  	<select id="getDeletedArticleInfoByUserId" resultType="com.Blog.bean.Article" parameterType="int">
+		select * from article_delete where user_id=#{_parameter}
+	</select>	
+	<delete id="deleteArticle_Delete" parameterType="int">
+        delete from article_delete where article_id=#{_parameter}
+    </delete>
+  
+</mapper>
